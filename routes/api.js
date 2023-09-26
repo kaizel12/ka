@@ -25,9 +25,11 @@ var kuhong = db.get('ojan'); // jan diubah
 var axios = require('axios');
 var qs = require('qs');
 var ytdl = require('ytdl-core');
+var yts = require('yt-search')
 var ytpl = require('ytpl');
 var secure = require('ssl-express-www');
 var cors = require('cors');
+var xfarr = require('xfarr-api')
 var scrapeYt = require("scrape-yt");
 var fetch = require('node-fetch');
 var cheerio = require('cheerio');
@@ -160,7 +162,7 @@ router.get('/cecan/china', async (req, res, next) => {
           var apikey = req.query.apikey
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/zeeoneofc/Asupan/main/cecan/china.json`))
+       fetch(encodeURI(`https://raw.githubusercontent.com/Kira-Master/source/main/asupan/china.json`))
         .then(response => response.json())
         .then(async data => {
         var result = data[Math.floor(Math.random() * data.length)];
@@ -181,7 +183,7 @@ router.get('/cecan/vietnam', async (req, res, next) => {
           var apikey = req.query.apikey
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/zeeoneofc/Asupan/main/cecan/vietnam.json`))
+       fetch(encodeURI(`https://raw.githubusercontent.com/Kira-Master/source/main/asupan/vietnam.json`))
         .then(response => response.json())
         .then(async data => {
         var result = data[Math.floor(Math.random() * data.length)];
@@ -202,7 +204,7 @@ router.get('/cecan/thailand', async (req, res, next) => {
           var apikey = req.query.apikey
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/zeeoneofc/Asupan/main/cecan/thailand.json`))
+       fetch(encodeURI(`https://raw.githubusercontent.com/Kira-Master/source/main/asupan/thailand.json`))
         .then(response => response.json())
         .then(async data => {
         var result = data[Math.floor(Math.random() * data.length)];
@@ -223,7 +225,7 @@ router.get('/cecan/indonesia', async (req, res, next) => {
           var apikey = req.query.apikey
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/zeeoneofc/Asupan/main/cecan/indonesia.json`))
+       fetch(encodeURI(`https://raw.githubusercontent.com/Kira-Master/source/main/asupan/indonesia.json`))
         .then(response => response.json())
         .then(async data => {
         var result = data[Math.floor(Math.random() * data.length)];
@@ -244,7 +246,7 @@ router.get('/cecan/korea', async (req, res, next) => {
           var apikey = req.query.apikey
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/zeeoneofc/Asupan/main/cecan/korea.json`))
+       fetch(encodeURI(`https://raw.githubusercontent.com/Kira-Master/source/main/asupan/korea.json`))
         .then(response => response.json())
         .then(async data => {
         var result = data[Math.floor(Math.random() * data.length)];
@@ -265,7 +267,7 @@ router.get('/cecan/japan', async (req, res, next) => {
           var apikey = req.query.apikey
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/zeeoneofc/Asupan/main/cecan/japan.json`))
+       fetch(encodeURI(`https://raw.githubusercontent.com/Kira-Master/source/main/asupan/japan.json`))
         .then(response => response.json())
         .then(async data => {
         var result = data[Math.floor(Math.random() * data.length)];
@@ -286,7 +288,7 @@ router.get('/cecan/malaysia', async (req, res, next) => {
           var apikey = req.query.apikey
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/zeeoneofc/Asupan/main/cecan/malaysia.json`))
+       fetch(encodeURI(`https://raw.githubusercontent.com/Kira-Master/source/main/asupan/malaysia.json`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -483,7 +485,7 @@ router.get('/download/facebook', async (req, res, next) => {
        	if(!apikey) return res.json(loghandler.apikey)
        if (!url) return res.json({ status : false, creator : `${creator}`, message : "masukan parameter url"})
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://fb-api-zhirrr.vercel.app/?url=${url}`))
+       fetch(encodeURI(`https://vihangayt.me/download/fb?url=${url}`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -611,8 +613,7 @@ router.get('/download/ytsearch', async (req, res, next) => {
        	if(!apikey) return res.json(loghandler.apikey)
        if (!url) return res.json({ status : false, creator : `${creator}`, message : "masukan parameter query"})
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://yutub-api-zaahirr.herokuapp.com/search?q=${url}`))
-        .then(response => response.json())
+       yts()
         .then(data => {
         var result = data;
              res.json({
@@ -634,8 +635,7 @@ router.get('/download/ytmp4', async (req, res, next) => {
        	if(!apikey) return res.json(loghandler.apikey)
        if (!url) return res.json({ status : false, creator : `${creator}`, message : "masukan parameter url"})
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://python-api-zhirrr.herokuapp.com/api/ytv?url=${url}`))
-        .then(response => response.json())
+       youtube()
         .then(data => {
         var result = data;
              res.json({
@@ -658,7 +658,7 @@ router.get('/lk21/search', async (req, res, next) => {
        	if(!apikey) return res.json(loghandler.apikey)
        if (!url) return res.json({ status : false, creator : `${creator}`, message : "masukan parameter film"})
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://lk21-api-zahirr.herokuapp.com/search?query=${url}`))
+       fetch(encodeURI(`https://wibu-api.eu.org/api/lk21/search?title=${url}`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -911,7 +911,7 @@ router.get('/news/cnn', async (req, res, next) => {
        	if(!apikey) return res.json(loghandler.apikey)
        if (!url) return res.json({ status : false, creator : `${creator}`, message : "masukan parameter type"})      
        if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://news-api-zhirrr.vercel.app/v1/cnn-news/${url}`))
+       fetch(encodeURI(`https://api.akuari.my.id/info/cnn`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -934,7 +934,7 @@ router.get('/news/cnbc', async (req, res, next) => {
        	if(!apikey) return res.json(loghandler.apikey)
        if (!url) return res.json({ status : false, creator : `${creator}`, message : "masukan parameter type"})      
        if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://news-api-zhirrr.vercel.app/v1/cnbc-news/${url}`))
+       fetch(encodeURI(`https://api.akuari.my.id/info/cnbindonesia`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -1025,7 +1025,7 @@ router.get('/news/kumparan', async (req, res, next) => {
        	var url = req.query.type
        	if(!apikey) return res.json(loghandler.apikey)
          if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://news-api-zhirrr.vercel.app/v1/kumparan-news`))
+       fetch(encodeURI(`https://api.akuari.my.id/info/merdeka`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -1955,9 +1955,8 @@ router.get('/search/anime', async (req, res, next) => {
        	if(!apikey) return res.json(loghandler.apikey)
        if (!text) return res.json({ status : false, creator : `${creator}`, message : "masukan parameter query"})      
          if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://arnz-api-production.up.railway.app/api/anime/search?q=${q}`))
-        .then(response => response.json())
-        .then(data => {
+       xfarr.anime(text)
+		 .then(data => {
         var data = data;
              res.json({
              	message: `Ok`,
@@ -1982,8 +1981,7 @@ router.get('/anime/searchanime', async (req, res, next) => {
        	if(!apikey) return res.json(loghandler.apikey)
        if (!text) return res.json({ status : false, creator : `${creator}`, message : "masukan parameter query"})      
          if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://arnz-api-production.up.railway.app/api/anime/search?q=${q}`))
-        .then(response => response.json())
+       xfarr.anime(text)
         .then(data => {
         var data = data;
              res.json({
@@ -2057,7 +2055,7 @@ router.get('/nsfw/ass', async (req, res, next) => {
        	var text = req.query.page
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/jepribarus/JB-Api/main/nsfw/ass.json`))
+       fetch(encodeURI(`https://raw.githubusercontent.com/Kira-Master/source/main/nsfw/ass.json`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -2080,7 +2078,7 @@ router.get('/nsfw/ahegao', async (req, res, next) => {
        	var text = req.query.page
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/jepribarus/JB-Api/main/nsfw/ahegao.json`))
+       fetch(encodeURI(`https://raw.githubusercontent.com/Kira-Master/source/main/nsfw/ahegao.json`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -2103,7 +2101,7 @@ router.get('/nsfw/bdsm', async (req, res, next) => {
        	var text = req.query.page
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/jepribarus/JB-Api/main/nsfw/bdsm.json`))
+       fetch(encodeURI(`https://raw.githubusercontent.com/Kira-Master/source/main/nsfw/bdsm.json`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -2126,7 +2124,7 @@ router.get('/nsfw/blowjob', async (req, res, next) => {
        	var text = req.query.page
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/jepribarus/JB-Api/main/nsfw/blowjob.json`))
+       fetch(encodeURI(`https://raw.githubusercontent.com/Kira-Master/source/main/nsfw/blowjob.json`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -2149,7 +2147,7 @@ router.get('/nsfw/cuckold', async (req, res, next) => {
        	var text = req.query.page
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/jepribarus/JB-Api/main/nsfw/cuckold.json`))
+       fetch(encodeURI(`https://raw.githubusercontent.com/Kira-Master/source/main/nsfw/cuckold.json`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -2172,7 +2170,7 @@ router.get('/nsfw/cum', async (req, res, next) => {
        	var text = req.query.page
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/jepribarus/JB-Api/main/nsfw/cum.json`))
+       fetch(encodeURI(`https://raw.githubusercontent.com/Kira-Master/source/main/nsfw/cum.json`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -2195,7 +2193,7 @@ router.get('/nsfw/ero', async (req, res, next) => {
        	var text = req.query.page
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/jepribarus/JB-Api/main/nsfw/ero.json`))
+       fetch(encodeURI(`https://raw.githubusercontent.com/Kira-Master/source/main/nsfw/ero.json`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -2218,7 +2216,7 @@ router.get('/nsfw/femdom', async (req, res, next) => {
        	var text = req.query.page
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/jepribarus/JB-Api/main/nsfw/femdom.json`))
+       fetch(encodeURI(`https://raw.githubusercontent.com/Kira-Master/source/main/nsfw/femdom.json`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -2241,7 +2239,7 @@ router.get('/nsfw/foot', async (req, res, next) => {
        	var text = req.query.page
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/jepribarus/JB-Api/main/nsfw/foot.json`))
+       fetch(encodeURI(`https://raw.githubusercontent.com/Kira-Master/source/main/nsfw/foot.json`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -2264,7 +2262,7 @@ router.get('/nsfw/gangbang', async (req, res, next) => {
        	var text = req.query.page
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/jepribarus/JB-Api/main/nsfw/gangbang.json`))
+       fetch(encodeURI(`https://raw.githubusercontent.com/Kira-Master/source/main/nsfw/gangbang.json`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -2287,7 +2285,7 @@ router.get('/nsfw/glasses', async (req, res, next) => {
        	var text = req.query.page
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/jepribarus/JB-Api/main/nsfw/glasses.json`))
+       fetch(encodeURI(`https://raw.githubusercontent.com/Kira-Master/source/main/nsfw/glasses.json`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -2310,7 +2308,7 @@ router.get('/nsfw/hentai', async (req, res, next) => {
        	var text = req.query.page
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/jepribarus/JB-Api/main/nsfw/hentai.json`))
+       fetch(encodeURI(`https://raw.githubusercontent.com/Kira-Master/source/main/nsfw/hentai.json`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -2333,7 +2331,7 @@ router.get('/nsfw/hentaigif', async (req, res, next) => {
        	var text = req.query.page
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/jepribarus/JB-Api/main/nsfw/hnt_gifs.json`))
+       fetch(encodeURI(`https://raw.githubusercontent.com/Kira-Master/source/main/nsfw/hnt_gifs.json`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -2356,7 +2354,7 @@ router.get('/nsfw/jahy', async (req, res, next) => {
        	var text = req.query.page
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/jepribarus/JB-Api/main/nsfw/jahy.json`))
+       fetch(encodeURI(`https://raw.githubusercontent.com/Kira-Master/source/main/nsfw/jahy.json`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -2379,7 +2377,7 @@ router.get('/nsfw/masturbation', async (req, res, next) => {
        	var text = req.query.page
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/jepribarus/JB-Api/main/nsfw/masturbation.json`))
+       fetch(encodeURI(`https://raw.githubusercontent.com/Kira-Master/source/main/nsfw/masturbation.json`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -2402,7 +2400,7 @@ router.get('/nsfw/neko', async (req, res, next) => {
        	var text = req.query.page
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/jepribarus/JB-Api/main/nsfw/nsfwNeko.json`))
+       fetch(encodeURI(`https://raw.githubusercontent.com/Kira-Master/source/main/nsfw/nsfwNeko.json`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -2425,7 +2423,7 @@ router.get('/nsfw/orgy', async (req, res, next) => {
        	var text = req.query.page
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/jepribarus/JB-Api/main/nsfw/orgy.json`))
+       fetch(encodeURI(`https://raw.githubusercontent.com/Kira-Master/source/main/nsfw/orgy.json`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -2448,7 +2446,7 @@ router.get('/nsfw/panties', async (req, res, next) => {
        	var text = req.query.page
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/jepribarus/JB-Api/main/nsfw/panties.json`))
+       fetch(encodeURI(`https://raw.githubusercontent.com/Kira-Master/source/main/nsfw/panties.json`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -2471,7 +2469,7 @@ router.get('/nsfw/pussy', async (req, res, next) => {
        	var text = req.query.page
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/jepribarus/JB-Api/main/nsfw/pussy.json`))
+       fetch(encodeURI(`https://raw.githubusercontent.com/Kira-Master/source/main/nsfw/pussy.json`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -2494,7 +2492,7 @@ router.get('/nsfw/thighs', async (req, res, next) => {
        	var text = req.query.page
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/jepribarus/JB-Api/main/nsfw/thighs.json`))
+       fetch(encodeURI(`https://raw.githubusercontent.com/Kira-Master/source/main/nsfw/thighs.json`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -2517,7 +2515,7 @@ router.get('/nsfw/yuri', async (req, res, next) => {
        	var text = req.query.page
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/jepribarus/JB-Api/main/nsfw/yuri.json`))
+       fetch(encodeURI(`https://raw.githubusercontent.com/Kira-Master/source/main/nsfw/yuri.json`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -2542,7 +2540,7 @@ router.get('/islam/tahlil', async (req, res, next) => {
        	var text = req.query.page
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/Zhirrr/My-SQL-Results/main/data/dataTahlil.json`))
+       fetch(encodeURI(`https://api.akuari.my.id/islami/tahlil`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -2584,7 +2582,7 @@ router.get('/islam/ayatkursi', async (req, res, next) => {
        	var text = req.query.page
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/Zhirrr/My-SQL-Results/main/data/dataAyatKursi.json`))
+       fetch(encodeURI(`https://api.akuari.my.id/islami/ayatkursi`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -2605,7 +2603,7 @@ router.get('/islam/doaharian', async (req, res, next) => {
        	var text = req.query.page
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/Zhirrr/My-SQL-Results/main/data/dataDoaHarian.json`))
+       fetch(encodeURI(`https://api.akuari.my.id/islami/doa`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -2647,7 +2645,7 @@ router.get('/islam/niatshalat', async (req, res, next) => {
        	var text = req.query.page
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/Zhirrr/My-SQL-Results/main/data/dataNiatShalat.json`))
+       fetch(encodeURI(`https://api.akuari.my.id/islami/niatshalat`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -2689,7 +2687,7 @@ router.get('/islam/asmaulhusna', async (req, res, next) => {
        	var text = req.query.page
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://raw.githubusercontent.com/Zhirrr/My-SQL-Results/main/data/dataAsmaulHusna.json`))
+       fetch(encodeURI(`https://api.akuari.my.id/islami/asmaulhusna`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -2840,7 +2838,7 @@ router.get('/other/ghstalk', async (req, res, next) => {
        	if(!apikey) return res.json(loghandler.apikey)
         if(!text) return res.json({ status : false, creator : `${creator}`, message : "masukan parameter username"})
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://github-api-zhirrr.vercel.app/api/detailuser?q=${text}`))
+       fetch(encodeURI(`https://vihangayt.me/stalk/githubuser?q=${text}`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -2863,7 +2861,7 @@ router.get('/other/repostalk', async (req, res, next) => {
        	if(!apikey) return res.json(loghandler.apikey)
        if(!text) return res.json({ status : false, creator : `${creator}`, message : "masukan parameter username"})
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://github-api-zhirrr.vercel.app/api/searchrepo?q=${text}`))
+       fetch(encodeURI(`https://vihangayt.me/stalk/githubrepo?url=${text}`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -2886,7 +2884,7 @@ router.get('/other/hilih', async (req, res, next) => {
        	if(!apikey) return res.json(loghandler.apikey)
         if(!text) return res.json({ status : false, creator : `${creator}`, message : "masukan parameter kata"})
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://hilih-api-zhirrr.vercel.app/api/hilih?kata=${text}`))
+       fetch(encodeURI(`https://api.akuari.my.id/converter/hilih?kata=${text}`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -2952,7 +2950,7 @@ router.get('/other/translate', async (req, res, next) => {
        	if(!apikey) return res.json(loghandler.apikey)
        if(!text) return res.json({ status : false, creator : `${creator}`, message : "masukan parameter kata"})
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://docs-api-zahirrr.herokuapp.com/api/translate?text=${text}`))
+       fetch(encodeURI(`https://api.akuari.my.id/edukasi/terjemah?query=${text}&kode=en}`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -2973,7 +2971,7 @@ router.get('/other/infotsunami', async (req, res, next) => {
        	var text = req.query.kata
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://bmkg-api-zahirr.herokuapp.com/api/tsunami`))
+       fetch(encodeURI(`https://api.akuari.my.id/info/tsunami`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -2994,7 +2992,7 @@ router.get('/other/infocuacadunia', async (req, res, next) => {
        	var text = req.query.kata
        	if(!apikey) return res.json(loghandler.apikey)
        if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://bmkg-api-zahirr.herokuapp.com/api/cuaca/dunia`))
+       fetch(encodeURI(`https://api.akuari.my.id/info/cuaca-bandara`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -3015,7 +3013,7 @@ router.get('/other/cuacabandara', async (req, res, next) => {
        	var text = req.query.kata
        	if(!apikey) return res.json(loghandler.apikey)
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://bmkg-api-zahirr.herokuapp.com/api/cuaca/bandara`))
+       fetch(encodeURI(`https://api.akuari.my.id/info/cuaca-bandara`))
         .then(response => response.json())
         .then(data => {
         var result = data;
@@ -3101,7 +3099,7 @@ router.get('/other/kbbi', async (req, res, next) => {
        	if(!apikey) return res.json(loghandler.apikey)
        if(!text) return res.json({ status : false, creator : `${creator}`, message : "masukan parameter kata"})
         if(listkey.includes(apikey)){
-       fetch(encodeURI(`https://kbbi-api-zhirrr.vercel.app/api/kbbi?text=${text}`))
+       fetch(encodeURI(`https://api.akuari.my.id/edukasi/kbbi?query=${text}`))
         .then(response => response.json())
         .then(data => {
         var result = data;
