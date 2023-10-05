@@ -9,7 +9,7 @@ function hilihgen(){
     confirmButtonText: 'Look up',
     showLoaderOnConfirm: true,
     preConfirm: (login) => {
-      return fetch(`//hilih-api-zhirrr.vercel.app/api/hilih?kata=${login}`)
+      return fetch(`//api.akuari.my.id/converter/hilih?kata=${login}`)
         .then(response => {
           if (!response.ok) {
             throw new Error(response.statusText)

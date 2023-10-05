@@ -1,0 +1,5 @@
+{"error":".zip archives do not support non-regular files","level":"error","msg":"unable to write file .config/npm/node_global/bin/synchrony","time":"2023-09-26T23:27:49Z"}
+{"error":".zip archives do not support non-regular files","level":"error","msg":"unable to write file .config/npm/node_global/lib/node_modules/deobfuscator/node_modules/.bin/acorn","time":"2023-09-26T23:27:49Z"}
+{"error":".zip archives do not support non-regular files","level":"error","msg":"unable to write file .config/npm/node_global/lib/node_modules/deobfuscator/node_modules/.bin/esparse","time":"2023-09-26T23:27:49Z"}
+{"error":".zip archives do not support non-regular files","level":"error","msg":"unable to write file .config/npm/node_global/lib/node_modules/deobfuscator/node_modules/.bin/esvalidate","time":"2023-09-26T23:27:49Z"}
+{"error":".zip archives do not support non-regular files","level":"error","msg":"unable to write file .config/npm/node_global/lib/node_modules/deobfuscator/node_modules/.bin/prettier","time":"2023-09-26T23:27:49Z"}
