@@ -1126,10 +1126,10 @@ router.get('/download/instagram', async (req, res, next) => {
        	if(!apikey) return res.json(loghandler.apikey)
        if (!url) return res.json({ status : false, creator : `${creator}`, message : "masukan parameter url"})
         if(listkey.includes(apikey)){
-         fetch(encodeURI(`https://api.akuari.my.id/downloader/igdl2?link=${url}`))
+         fetch(encodeURI(`https://vihangayt.me/download/instagram2?url=${url}`))
       .then(response => response.json())
 	    .then(data => {
-		var result = data.respon;
+		var result = data.data;
 		res.json({
       status: 200,
       author: creator,
