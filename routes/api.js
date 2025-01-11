@@ -1213,29 +1213,45 @@ router.get('/download/tiktok', async (req, res, next) => {
   res.json(loghandler.apikey)
 }
 })
+
+const axios = require("axios");
+
 router.get('/download/ytmp3', async (req, res, next) => {
-          var apikey = req.query.apikey
-          var url = req.query.url
-       	if(!apikey) return res.json(loghandler.apikey)
-       if (!url) return res.json({ status : false, creator : `${creator}`, message : "masukan parameter url"})
-        if(listkey.includes(apikey)){
-       dylux.ytmp3(url)
-			.then(data => {
-		var result = data;
-		res.json({
-      author: creator,
-      status: 200,
-			result
-		})
-		})
-         .catch(e => {
-         	console.log(e);
-         	res.json(loghandler.error)
-})
-} else {
-  res.json(loghandler.apikey)
-}
-})
+    var apikey = req.query.apikey;
+    var url = req.query.url;
+
+    if (!apikey) return res.json(loghandler.apikey);
+    if (!url) return res.json({ status: false, creator: `${creator}`, message: "masukan parameter url" });
+
+    if (listkey.includes(apikey)) {
+        try {
+            const response = await axios.post(
+                "https://xnplfwb46ecpt6xezyxjieolp40vifvi.lambda-url.ap-south-1.on.aws/",
+                { body: { url } },
+                {
+                    headers: {
+                        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/537.36 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/537.36",
+                        Referer: "https://savetubeonline.com/",
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
+            var result = response.data;
+            res.json({
+                author: creator,
+                status: 200,
+                result,
+            });
+        } catch (e) {
+            console.log(e);
+            res.json(loghandler.error);
+        }
+    } else {
+        res.json(loghandler.apikey);
+    }
+});
+			
 router.get('/download/ytsearch', async (req, res, next) => {
           var apikey = req.query.apikey
        	var url = req.query.query
