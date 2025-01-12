@@ -1214,41 +1214,91 @@ router.get('/download/tiktok', async (req, res, next) => {
 }
 })
 
-router.get('/download/ytmp3', async (req, res, next) => {
-    var apikey = req.query.apikey;
-    var url = req.query.url;
+const formatAudio = ['mp3', 'm4a'];
+router.get('/download/ytmp3', async (req, res) => {
+  const apikey = req.query.apikey;
+  const url = req.query.url;
 
-    if (!apikey) return res.json(loghandler.apikey);
-    if (!url) return res.json({ status: false, creator: `${creator}`, message: "masukan parameter url" });
+  // Validasi parameter
+  if (!apikey) return res.json({ status: false, message: "Masukkan parameter apikey" });
+  if (!url) return res.json({ status: false, message: "Masukkan parameter url" });
 
-    if (listkey.includes(apikey)) {
-        try {
-            const response = await axios.post(
-                "https://xnplfwb46ecpt6xezyxjieolp40vifvi.lambda-url.ap-south-1.on.aws/",
-                { body: { url } },
-                {
-                    headers: {
-                        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/537.36 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/537.36",
-                        Referer: "https://savetubeonline.com/",
-                        "Content-Type": "application/json",
-                    },
-                }
-            );
+  // Validasi API key
+  if (!listkey.includes(apikey)) return res.json({ status: false, message: "Invalid API key" });
 
-            var result = response.data;
-            res.json({
-                author: creator,
-                status: 200,
-                result,
-            });
-        } catch (e) {
-            console.log(e);
-            res.json(loghandler.error);
-        }
-    } else {
-        res.json(loghandler.apikey);
+  try {
+    // Mulai proses download audio
+    const response = await axios.get(
+      `https://p.oceansaver.in/ajax/download.php?copyright=0&format=mp3&url=${url}`,
+      {
+        headers: {
+          'User-Agent': 'MyApp/1.0',
+          'Referer': 'https://ddownr.com/enW7/youtube-video-downloader',
+        },
+        timeout: 10000, // Timeout setelah 30 detik
+      }
+    );
+
+    // Ambil ID untuk cek progres
+    const data = response.data;
+    const downloadUrl = await cekProgress(data.id);
+
+    if (!downloadUrl) {
+      return res.json({
+        status: false,
+        message: "Gagal mendapatkan URL download audio",
+      });
     }
+
+    // Kembalikan hasil ke pengguna
+    res.json({
+      author: "kaizel",
+      status: 200,
+      result: {
+        success: true,
+        format: "mp3",
+        creator: "kaizel",
+        "channel whatsapp": "https://whatsapp.com/channel/0029VanrndJICVfcrjFr3x2R",
+        title: data.title,
+        thumbnail: data.info.image,
+        downloadUrl: downloadUrl,
+      },
+    });
+  } catch (error) {
+    console.error("Error:", error.response ? error.response.data : error.message);
+    res.json({ status: false, message: "Gagal memproses permintaan", error: error.message });
+  }
 });
+
+// Fungsi cek progres download
+async function cekProgress(id) {
+  try {
+    const progressResponse = await axios.get(
+      `https://p.oceansaver.in/ajax/progress.php?id=${id}`,
+      {
+        headers: {
+          'User-Agent': 'MyApp/1.0',
+          'Referer': 'https://ddownr.com/enW7/youtube-video-downloader',
+        },
+        timeout: 10000, // Timeout setelah 30 detik
+      }
+    );
+
+    const data = progressResponse.data;
+
+    if (data.progress === 1000) {
+      return data.download_url; // URL download ditemukan
+    } else {
+      console.log("Proses belum selesai, mencoba lagi...");
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Tunggu 1 detik
+      return cekProgress(id); // Coba lagi sampai selesai
+    }
+  } catch (error) {
+    console.error("Error:", error.response ? error.response.data : error.message);
+    return null; // Jika ada error, kembalikan null
+  }
+}
+
 			
 router.get('/download/ytsearch', async (req, res, next) => {
           var apikey = req.query.apikey
