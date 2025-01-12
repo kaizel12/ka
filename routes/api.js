@@ -1214,8 +1214,6 @@ router.get('/download/tiktok', async (req, res, next) => {
 }
 })
 
-const axios = require("axios");
-
 router.get('/download/ytmp3', async (req, res, next) => {
     var apikey = req.query.apikey;
     var url = req.query.url;
