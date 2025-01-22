@@ -39,8 +39,8 @@ var cheerio = require('cheerio');
 var request = require('request');
 var fs = require('fs');
 var router  = express.Router();
-var creator = 'Zexxa Dev' // ubah jadi nama lu
-const listkey = ["Zexxabot","Zexxa","Kira"]; // ubah apikey nya, tambah aja klo mau
+var creator = 'Kaizel kaijs' // ubah jadi nama lu
+const listkey = ["Zexxabot","kai","Kira"]; // ubah apikey nya, tambah aja klo mau
 var mbuh = require(__path + '/lib/lambuh.js')
 var { otakudesu, covid, ongoing, komiku, tebakgambar, surah, sholat, lirik, chara,wattpad, playstore, linkwa, pinterest ,igdl,igstory, igstalk,twitter,fbdown,youtube,tiktok, kodepos, enchance, toanime } = require(__path + '/lib/scrape.js');
 var { color, bgcolor } = require(__path + '/lib/color.js');
@@ -1219,15 +1219,12 @@ router.get('/download/ytmp3', async (req, res) => {
   const apikey = req.query.apikey;
   const url = req.query.url;
 
-  // Validasi parameter
   if (!apikey) return res.json({ status: false, message: "Masukkan parameter apikey" });
   if (!url) return res.json({ status: false, message: "Masukkan parameter url" });
 
-  // Validasi API key
   if (!listkey.includes(apikey)) return res.json({ status: false, message: "Invalid API key" });
 
   try {
-    // Mulai proses download audio
     const response = await axios.get(
       `https://p.oceansaver.in/ajax/download.php?copyright=0&format=mp3&url=${url}`,
       {
@@ -1235,11 +1232,10 @@ router.get('/download/ytmp3', async (req, res) => {
           'User-Agent': 'MyApp/1.0',
           'Referer': 'https://ddownr.com/enW7/youtube-video-downloader',
         },
-        timeout: 10000, // Timeout setelah 30 detik
+        timeout: 7000, // Kurangi timeout
       }
     );
 
-    // Ambil ID untuk cek progres
     const data = response.data;
     const downloadUrl = await cekProgress(data.id);
 
@@ -1250,7 +1246,6 @@ router.get('/download/ytmp3', async (req, res) => {
       });
     }
 
-    // Kembalikan hasil ke pengguna
     res.json({
       author: "kaizel",
       status: 200,
@@ -1270,33 +1265,46 @@ router.get('/download/ytmp3', async (req, res) => {
   }
 });
 
-// Fungsi cek progres download
 async function cekProgress(id) {
-  try {
-    const progressResponse = await axios.get(
-      `https://p.oceansaver.in/ajax/progress.php?id=${id}`,
-      {
-        headers: {
-          'User-Agent': 'MyApp/1.0',
-          'Referer': 'https://ddownr.com/enW7/youtube-video-downloader',
-        },
-        timeout: 10000, // Timeout setelah 30 detik
+  let attempts = 0; // Membatasi jumlah percobaan
+  let lastProgress = 0;
+
+  while (attempts < 10) { // Batasi maksimal 10 kali percobaan
+    try {
+      const progressResponse = await axios.get(
+        `https://p.oceansaver.in/ajax/progress.php?id=${id}`,
+        {
+          headers: {
+            'User-Agent': 'MyApp/1.0',
+            'Referer': 'https://ddownr.com/enW7/youtube-video-downloader',
+          },
+          timeout: 5000, // Timeout lebih kecil
+        }
+      );
+
+      const data = progressResponse.data;
+
+      if (data.progress === 1000) {
+        return data.download_url; // URL download ditemukan
       }
-    );
 
-    const data = progressResponse.data;
+      if (data.progress === lastProgress) {
+        attempts++; // Tambah percobaan jika tidak ada perubahan progress
+      } else {
+        lastProgress = data.progress; // Simpan progress terakhir
+        attempts = 0; // Reset percobaan jika ada perubahan progress
+      }
 
-    if (data.progress === 1000) {
-      return data.download_url; // URL download ditemukan
-    } else {
-      console.log("Proses belum selesai, mencoba lagi...");
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Tunggu 1 detik
-      return cekProgress(id); // Coba lagi sampai selesai
+      console.log(`Progress: ${data.progress}, mencoba lagi...`);
+      await new Promise((resolve) => setTimeout(resolve, 500)); // Tunggu 0.5 detik
+    } catch (error) {
+      console.error("Error:", error.response ? error.response.data : error.message);
+      return null;
     }
-  } catch (error) {
-    console.error("Error:", error.response ? error.response.data : error.message);
-    return null; // Jika ada error, kembalikan null
   }
+
+  console.error("Progress gagal mencapai 100%");
+  return null; // Jika loop selesai tanpa progress 100%
 }
 
 			
@@ -1323,29 +1331,84 @@ router.get('/download/ytsearch', async (req, res, next) => {
   res.json(loghandler.apikey)
 }
 })
-router.get('/download/ytmp4', async (req, res, next) => {
-          var apikey = req.query.apikey
-       	var url = req.query.url
-       	if(!apikey) return res.json(loghandler.apikey)
-       if (!url) return res.json({ status : false, creator : `${creator}`, message : "masukan parameter url"})
-        if(listkey.includes(apikey)){
-       dylux.ytmp4(url)
-        .then(data => {
-        var result = data;
-             res.json({
-             status: 200,
-             	author: 'Zexxa Dev',
-                 result
-             })
-         })
-         .catch(e => {
-         	console.log(e);
-         	res.json(loghandler.error)
-})
-} else {
-  res.json(loghandler.apikey)
+
+
+
+router.get('/download/ytmp4', async (req, res) => {
+  const apikey = req.query.apikey;
+  const url = req.query.url;
+
+  // Validasi parameter
+  if (!apikey) return res.json({ status: false, message: "Masukkan parameter apikey" });
+  if (!url) return res.json({ status: false, message: "Masukkan parameter url" });
+
+  // Validasi API key
+  if (!listkey.includes(apikey)) {
+    return res.json({ status: false, message: "Invalid API key" });
+  }
+
+  try {
+    // Request langsung untuk mendownload MP4
+    const response = await axios.get(
+      `https://p.oceansaver.in/ajax/download.php?copyright=0&format=mp4&url=${url}`,
+      {
+        headers: {
+          'User-Agent': 'MyApp/1.0',
+          'Referer': 'https://ddownr.com/enW7/youtube-video-downloader',
+        },
+        timeout: 10000, // Timeout 10 detik
+      }
+    );
+
+    const data = response.data;
+
+    // Cek progress download hingga selesai
+    const downloadUrl = await cekProgress(data.id);
+
+    if (!downloadUrl) {
+      return res.json({
+        status: false,
+        message: "Gagal mendapatkan URL download video",
+      });
+    }
+
+    // Jika berhasil, langsung redirect ke file MP4 untuk didownload
+    res.redirect(downloadUrl);
+  } catch (error) {
+    console.error("Error:", error.response ? error.response.data : error.message);
+    res.json({ status: false, message: "Gagal memproses permintaan", error: error.message });
+  }
+});
+
+// Fungsi untuk memantau progress download
+async function cekProgress(id) {
+  try {
+    const progressResponse = await axios.get(
+      `https://p.oceansaver.in/ajax/progress.php?id=${id}`,
+      {
+        headers: {
+          'User-Agent': 'MyApp/1.0',
+          'Referer': 'https://ddownr.com/enW7/youtube-video-downloader',
+        },
+        timeout: 10000, // Timeout 10 detik
+      }
+    );
+
+    const data = progressResponse.data;
+
+    if (data.progress === 1000) {
+      return data.download_url; // URL download ditemukan
+    } else {
+      console.log("Proses belum selesai, mencoba lagi...");
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Tunggu 1 detik
+      return cekProgress(id); // Coba lagi sampai selesai
+    }
+  } catch (error) {
+    console.error("Error:", error.response ? error.response.data : error.message);
+    return null; // Jika ada error, kembalikan null
+  }
 }
-})
+
 //lk21
 router.get('/lk21/search', async (req, res, next) => {
           var apikey = req.query.apikey
