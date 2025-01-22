@@ -1334,6 +1334,7 @@ router.get('/download/ytsearch', async (req, res, next) => {
 
 
 
+
 router.get('/download/ytmp4', async (req, res) => {
   const apikey = req.query.apikey;
   const url = req.query.url;
@@ -1348,7 +1349,7 @@ router.get('/download/ytmp4', async (req, res) => {
   }
 
   try {
-    // Request langsung untuk mendownload MP4
+    // Request ke API Ocean Saver untuk format MP4
     const response = await axios.get(
       `https://p.oceansaver.in/ajax/download.php?copyright=0&format=mp4&url=${url}`,
       {
@@ -1356,14 +1357,21 @@ router.get('/download/ytmp4', async (req, res) => {
           'User-Agent': 'MyApp/1.0',
           'Referer': 'https://ddownr.com/enW7/youtube-video-downloader',
         },
-        timeout: 10000, // Timeout 10 detik
+        timeout: 15000, // Timeout permintaan awal
       }
     );
 
     const data = response.data;
 
-    // Cek progress download hingga selesai
-    const downloadUrl = await cekProgress(data.id);
+    if (!data.id) {
+      return res.json({
+        status: false,
+        message: "Gagal mendapatkan ID download dari API",
+      });
+    }
+
+    // Cek progress download hingga selesai dengan optimasi interval lebih cepat
+    const downloadUrl = await cekProgressFast(data.id);
 
     if (!downloadUrl) {
       return res.json({
@@ -1372,7 +1380,7 @@ router.get('/download/ytmp4', async (req, res) => {
       });
     }
 
-    // Jika berhasil, langsung redirect ke file MP4 untuk didownload
+    // Redirect ke file MP4 untuk didownload
     res.redirect(downloadUrl);
   } catch (error) {
     console.error("Error:", error.response ? error.response.data : error.message);
@@ -1380,34 +1388,46 @@ router.get('/download/ytmp4', async (req, res) => {
   }
 });
 
-// Fungsi untuk memantau progress download
-async function cekProgress(id) {
-  try {
-    const progressResponse = await axios.get(
-      `https://p.oceansaver.in/ajax/progress.php?id=${id}`,
-      {
-        headers: {
-          'User-Agent': 'MyApp/1.0',
-          'Referer': 'https://ddownr.com/enW7/youtube-video-downloader',
-        },
-        timeout: 10000, // Timeout 10 detik
+// Fungsi untuk cek progress download dengan interval lebih cepat
+async function cekProgressFast(id) {
+  const maxRetry = 10; // Maksimal percobaan cek
+  const retryInterval = 500; // Interval 500ms
+  let retryCount = 0;
+
+  while (retryCount < maxRetry) {
+    try {
+      const progressResponse = await axios.get(
+        `https://p.oceansaver.in/ajax/progress.php?id=${id}`,
+        {
+          headers: {
+            'User-Agent': 'MyApp/1.0',
+            'Referer': 'https://ddownr.com/enW7/youtube-video-downloader',
+          },
+          timeout: 15000, // Timeout 15 detik untuk setiap cek progress
+        }
+      );
+
+      const data = progressResponse.data;
+
+      if (data.progress === 1000) {
+        console.log("Proses selesai, URL ditemukan:", data.download_url);
+        return data.download_url; // URL download ditemukan
+      } else {
+        console.log(`Progress: ${data.progress}% - Coba lagi dalam 500ms...`);
+        await new Promise((resolve) => setTimeout(resolve, retryInterval)); // Tunggu 500ms sebelum cek lagi
       }
-    );
-
-    const data = progressResponse.data;
-
-    if (data.progress === 1000) {
-      return data.download_url; // URL download ditemukan
-    } else {
-      console.log("Proses belum selesai, mencoba lagi...");
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Tunggu 1 detik
-      return cekProgress(id); // Coba lagi sampai selesai
+    } catch (error) {
+      console.error("Error cek progress:", error.response ? error.response.data : error.message);
+      return null;
     }
-  } catch (error) {
-    console.error("Error:", error.response ? error.response.data : error.message);
-    return null; // Jika ada error, kembalikan null
+
+    retryCount++;
   }
+
+  console.error("Proses cek progress melebihi batas maksimal percobaan");
+  return null; // Jika melebihi batas percobaan, return null
 }
+
 
 //lk21
 router.get('/lk21/search', async (req, res, next) => {
